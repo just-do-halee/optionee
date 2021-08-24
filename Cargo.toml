@@ -10,7 +10,7 @@ description = "The macro to creates option structure so easily."
 readme = "README.md"
 
 keywords = ["macro", "option", "utility", "data-structures", "no_std"]
-categories = ["development-tools", "data-structures", "configuration", "no-std"]
+categories = ["development-tools", "data-structures", "no-std"]
 
 license = "MIT OR Apache-2.0"
 edition = "2018"
