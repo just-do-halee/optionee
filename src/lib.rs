@@ -3,10 +3,12 @@
 
 //! # `Optionee`
 //!
-//! The macro to creates option structure so easily.<br>
-//! (no dependencies, 170 lines pure safe codes, supported no-std)  
+//! The macro to create option struct easily.<br>
+//! (no-std support)
 //! ## How to
-//! ```ignore
+//! ```rust
+//! # #[macro_use] extern crate optionee; extern crate alloc;
+//! # use optionee::*;
 //! optionee! {
 //!     InputOption {
 //!         Id {
@@ -20,14 +22,17 @@
 //!         }
 //!     }
 //! }
-//!
+//! # fn main() {
 //! let mut id_t = InputOption.Id();
 //! let user_input = 20;
 //! assert!(id_t.min_length.check(user_input).is_ok());
+//! # }
 //! ```
 //!
 //! ## More Examples
-//! ```ignore
+//! ```rust
+//! # #[macro_use] extern crate optionee; extern crate alloc;
+//! # use optionee::*;
 //! orderable! {
 //!     pub struct Job {
 //!         id: u32[*],
@@ -47,7 +52,7 @@
 //!         }
 //!     SecondPrivateOpt {
 //!             AnyName {
-//!                 name: String [=] "john".to_string(), "you are not John."
+//!                 name: String [=] "john".to_string()
 //!                 job: Job [>] Job::new(0, "sales".to_string(), 29), "id must be more than 1, salary 30"
 //!             }
 //!             OldPerson {
@@ -56,7 +61,7 @@
 //!             }
 //!         }
 //! }
-//!
+//! # fn main() {
 //! let mut t1 = TermOption.Password().encrypt(true).min_length(3);
 //! t1.min_length
 //!     .set_error_message(Some("password must be more than 3 lengths bytes."));
@@ -70,9 +75,25 @@
 //!
 //! assert!(t2.name.check("john".to_string()).is_ok());
 //! assert!(t2.job.check(Job::new(1, "artist".to_string(), 30)).is_ok());
+//! # }
 //! ```
 
-#![no_std]
+#![cfg_attr(all(not(feature = "std"), not(test)), no_std)]
+
+pub mod private {
+    pub use anyhow::Error;
+    #[cfg(not(feature = "std"))]
+    pub use core::{
+        cmp::{Ord, Ordering, PartialEq, PartialOrd},
+        option::Option,
+    };
+    #[cfg(feature = "std")]
+    pub use std::{
+        cmp::{Ord, Ordering, PartialEq, PartialOrd},
+        option::Option,
+    };
+}
+
 extern crate alloc;
 
 #[macro_use]
@@ -81,7 +102,7 @@ mod macros;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use alloc::string::{String, ToString};
+    use std::string::ToString;
 
     orderable! {
         pub struct Job {
@@ -102,7 +123,7 @@ mod tests {
             }
         SecondPrivateOpt {
                 AnyName {
-                    name: String [=] "john".to_string(), "you are not John."
+                    name: String [=] "john".to_string()
                     job: Job [>] Job::new(0, "sales".to_string(), 29), "id must be more than 1, salary 30"
                 }
                 OldPerson {

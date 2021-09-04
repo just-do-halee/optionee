@@ -1,21 +1,23 @@
 [package]
 name = "optionee"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["just-do-halee <just.do.halee@gmail.com>"]
 homepage = "https://github.com/just-do-halee/optionee"
 repository = "https://github.com/just-do-halee/optionee"
 
-description = "The macro to creates option structure so easily."
+description = "The macro to create option struct easily."
 
 readme = "README.md"
 
-keywords = ["macro", "option", "utility", "data-structures", "no_std"]
+keywords = ["settings", "option", "utility", "data-structures", "configuration"]
 categories = ["development-tools", "data-structures", "no-std"]
 
 license = "MIT OR Apache-2.0"
 edition = "2018"
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = ["std"]
+std = ["anyhow/default"]
 
 [dependencies]
+anyhow = { version = "1", default-features = false }

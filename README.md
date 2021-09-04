@@ -1,8 +1,7 @@
 # optionee
 
-The macro to creates option structure so easily.<br>
-
-(no dependencies, 170 lines pure safe codes, supported no-std)  
+The macro to create option struct easily.<br>
+(no-std support)
 
 [![Crates.io][crates-badge]][crates-url]
 [![Licensed][license-badge]][license-url]
@@ -19,7 +18,14 @@ The macro to creates option structure so easily.<br>
 
 ```toml
 [dependencies]
-optionee = "0.1.0"
+optionee = "0.2.0"
+```
+
+or
+
+```toml
+[dependencies]
+optionee = { version = "0.2.0", default-features = false } # no-std(alloc)
 ```
 
 ## How to
@@ -71,7 +77,7 @@ optionee! {
     }
     SecondPrivateOpt {
             AnyName {
-                name: String [=] "john".to_string(), "you are not John."
+                name: String [=] "john".to_string()
                 job: Job [>] Job::new(0, "sales".to_string(), 29), "id must be more than 1, salary 30"
             }
             OldPerson {

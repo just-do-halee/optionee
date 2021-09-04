@@ -5,15 +5,15 @@
 macro_rules! optionee {
     (@transform (>))
     => {
-        core::cmp::Ordering::Greater
+        $crate::private::Ordering::Greater
     };
     (@transform (<))
     => {
-        core::cmp::Ordering::Less
+        $crate::private::Ordering::Less
     };
     (@transform (=))
     => {
-        core::cmp::Ordering::Equal
+        $crate::private::Ordering::Equal
     };
     (@transform ())
     => {
@@ -51,17 +51,17 @@ macro_rules! optionee {
             #![allow(unused_imports)]
             #![allow(dead_code)]
             use super::*;
-            use core::{result::Result, cmp::{Ord, Ordering}, option::Option};
+            use $crate::private::*;
             pub struct Wrapping<T: Ord>(T, Ordering, Option<&'static str>);
             impl<T: Ord> Wrapping<T> {
-                pub fn check(&self, value: T) -> Result<(), &'static str> {
+                pub fn check(&self, value: T) -> Result<(), Error> {
                     let ordering = self.1;
                     let msg = self.2;
                     if value.cmp(&self.0) != ordering {
                         if let Some(v) = msg {
-                            Err(v)
+                            Err(Error::msg(v))
                         } else {
-                            Err("not matched.")
+                            Err(Error::msg("not matched."))
                         }
                     } else {
                         Ok(())
@@ -145,8 +145,8 @@ macro_rules! orderable {
                 }
             }
         }
-        impl core::cmp::Ord for $name {
-            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+        impl $crate::private::Ord for $name {
+            fn cmp(&self, other: &Self) -> $crate::private::Ordering {
                 let mut all = alloc::vec![];
                 $(
                     if orderable!(@transform [$($tt)?]) {
@@ -160,12 +160,12 @@ macro_rules! orderable {
                 first
             }
         }
-        impl core::cmp::PartialOrd for $name {
-            fn partial_cmp(&self, other: &Self) -> core::option::Option<core::cmp::Ordering> {
+        impl $crate::private::PartialOrd for $name {
+            fn partial_cmp(&self, other: &Self) -> $crate::private::Option<$crate::private::Ordering> {
                 Some(self.cmp(other))
             }
         }
-        impl core::cmp::PartialEq for $name {
+        impl $crate::private::PartialEq for $name {
             fn eq(&self, other: &Self) -> bool {
                 $(self.$var == other.$var)&&*
             }
